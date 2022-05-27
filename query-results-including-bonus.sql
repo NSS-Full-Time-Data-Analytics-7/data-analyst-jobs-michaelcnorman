@@ -20,60 +20,57 @@ GROUP BY location;
 
 SELECT COUNT(star_rating)
 FROM data_analyst_jobs
-WHERE star_rating > 4;
--- 416
+WHERE star_rating > 4
+AND location = 'TN';
+-- 3
 
-SELECT COUNT(review_count)
+SELECT COUNT(*)
 FROM data_analyst_jobs
 WHERE review_count BETWEEN 500 AND 1000;
 -- 151
 
-SELECT location AS state, AVG(star_rating) AS avg_rating
+SELECT location AS state, ROUND(AVG(star_rating)) AS avg_rating
 FROM data_analyst_jobs
-GROUP BY state;
--- KS
+GROUP BY state
+ORDER BY AVG(star_rating) DESC NULLS LAST;
+-- NE
 
-SELECT COUNT(Distinct(title))
+SELECT COUNT(Distinct title)
 FROM data_analyst_jobs;
 -- 881
 
-SELECT COUNT(DISTINCT(title))
+SELECT COUNT(DISTINCT title)
 FROM data_analyst_jobs
 WHERE location = 'CA';
 -- 230
 
-SELECT DISTINCT(company), AVG(star_rating)
+SELECT DISTINCT(company), ROUND(AVG(star_rating), 2) AS avg_star_rating
 FROM data_analyst_jobs
 WHERE review_count > 5000
+AND company IS NOT NULL
 GROUP BY company
-ORDER BY AVG(star_rating) DESC;
--- 41
--- American Express, 4.199999809
+ORDER BY ROUND(AVG(star_rating),2) DESC;
+-- 40
+-- American Express, 4.2
+
+SELECT COUNT(DISTINCT title)
+FROM data_analyst_jobs
+WHERE title ILIKE '%analyst%';
+-- 774
 
 SELECT title
 FROM data_analyst_jobs
-WHERE title ILIKE '%analyst%';
--- 1669
-
-SELECT COUNT(title), title
-FROM data_analyst_jobs
 WHERE title NOT ILIKE '%Analyst%'
-	AND title NOT ILIKE '%Analytics%'
-GROUP BY title;
+	AND title NOT ILIKE '%Analytics%';
 -- Commonality amongs results (4 results) they are visualization specialists using Tableau
 
-SELECT *
-FROM data_analyst_jobs
-WHERE days_since_posting > '21'
-	AND domain IS NOT NULL
-	AND skill ILIKE '%sql%'
-ORDER BY days_since_posting;
 
-SELECT days_since_posting, COUNT(domain), domain
+/*Bonus Question*/
+SELECT COUNT(title) AS num_jobs, domain AS industry
 FROM data_analyst_jobs
-WHERE domain IS NOT NULL
+WHERE skill ILIKE '%sql%'
 	AND days_since_posting > '21'
-	AND skill ILIKE '%sql%'
-GROUP BY domain, days_since_posting
-ORDER BY COUNT(domain) DESC;
--- 1. Banks & Finance (51) 2. Internet & Soft. (49) 3. Consulting (44) 4. Health Care (44)
+	AND domain IS NOT NULL
+GROUP BY domain
+ORDER BY num_jobs DESC;
+-- 1. Internet & Soft. (62)Banks & Finance (61) 2.  3. Consulting (57) 4. Health Care (52)
